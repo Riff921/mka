@@ -1,0 +1,958 @@
+<!doctype html>
+<html lang="id">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Makalah Interaktif</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+        body {
+            box-sizing: border-box;
+        }
+        
+        @page {
+            margin: 2.5cm;
+        }
+        
+        .page-content {
+            font-family: 'Times New Roman', serif;
+            line-height: 1.8;
+            text-align: justify;
+        }
+        
+        .page-break {
+            page-break-after: always;
+        }
+        
+        h1, h2, h3 {
+            font-weight: bold;
+        }
+        
+        .indent {
+            text-indent: 1cm;
+        }
+        
+        .center-page {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100%;
+            text-align: center;
+        }
+        
+        .hanging-indent {
+            padding-left: 1cm;
+            text-indent: -1cm;
+        }
+        
+        /* Page numbering */
+        .page-number {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-family: 'Times New Roman', serif;
+            text-align: center;
+            width: 100%;
+        }
+        
+        .page-number-roman {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-family: 'Times New Roman', serif;
+            text-align: center;
+            width: 100%;
+        }
+        
+        /* Individual page numbering - Updated after removing cover */
+        .page-1 .page-number-roman::after { content: "i"; } /* Kata Pengantar */
+        .page-2 .page-number-roman::after { content: "ii"; } /* Daftar Isi */
+        .page-3 .page-number::after { content: "1"; } /* BAB I */
+        .page-4 .page-number::after { content: "3"; } /* BAB II */
+        .page-5 .page-number::after { content: "9"; } /* BAB III */
+        .page-6 .page-number::after { content: "10"; } /* Daftar Pustaka */
+        
+        /* Ensure each page section has relative positioning for absolute page numbers */
+        .page-section {
+            position: relative;
+            min-height: 100vh;
+            padding-bottom: 60px;
+            margin-bottom: 40px;
+        }
+
+        /* Print Button Styles */
+        .print-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-family: 'Times New Roman', serif;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .print-button:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+        }
+
+        .print-button:active {
+            transform: translateY(0);
+        }
+
+        /* Print-specific styles */
+        @media print {
+            /* Hide print button and page numbers when printing */
+            .print-button,
+            .page-number,
+            .page-number-roman {
+                display: none !important;
+            }
+
+            /* Optimize page layout for printing */
+            body {
+                margin: 0;
+                padding: 0;
+                background: white !important;
+                color: black !important;
+                font-size: 12pt;
+                line-height: 1.8;
+                font-family: 'Times New Roman', serif;
+            }
+
+            .page-content {
+                max-width: none;
+                margin: 0;
+                padding: 0;
+                font-size: 12pt;
+                line-height: 1.8;
+                text-align: justify;
+            }
+
+            /* Maintain page sections for proper page breaks */
+            .page-section {
+                position: static;
+                min-height: auto;
+                padding-bottom: 0;
+                margin-bottom: 0;
+                border-bottom: none;
+            }
+
+            /* Force page breaks where specified */
+            .page-break {
+                page-break-after: always;
+                break-after: page;
+            }
+
+            /* Ensure proper page margins */
+            @page {
+                margin: 2.5cm;
+                size: A4;
+            }
+
+            /* Maintain heading styles */
+            h1, h2, h3, h4 {
+                page-break-after: avoid;
+                break-after: avoid-page;
+                font-weight: bold;
+                font-family: 'Times New Roman', serif;
+            }
+
+            h2 {
+                font-size: 14pt;
+                text-align: center;
+                text-transform: uppercase;
+                margin-bottom: 1.5em;
+            }
+
+            h3 {
+                font-size: 12pt;
+                margin-top: 1em;
+                margin-bottom: 0.5em;
+            }
+
+            h4 {
+                font-size: 12pt;
+                margin-top: 0.8em;
+                margin-bottom: 0.3em;
+            }
+
+            /* Maintain paragraph styles */
+            p {
+                orphans: 3;
+                widows: 3;
+                margin-bottom: 1em;
+                text-align: justify;
+                font-size: 12pt;
+                line-height: 1.8;
+            }
+
+            /* Maintain text indentation */
+            .indent {
+                text-indent: 1cm;
+            }
+
+            /* Remove any background colors or shadows for print */
+            * {
+                background: transparent !important;
+                box-shadow: none !important;
+                text-shadow: none !important;
+            }
+
+            /* Remove borders in print */
+
+            /* Maintain list styles */
+            ol, ul {
+                margin: 1em 0;
+                padding-left: 2cm;
+            }
+
+            li {
+                margin: 0.3em 0;
+                line-height: 1.8;
+            }
+
+            /* Ensure hanging indent works in print */
+            .hanging-indent {
+                padding-left: 1cm;
+                text-indent: -1cm;
+                margin-bottom: 0.8em;
+                line-height: 1.8;
+            }
+
+            /* Maintain daftar isi formatting */
+            .flex {
+                display: flex !important;
+                justify-content: space-between !important;
+                padding-bottom: 0.3em !important;
+                margin-bottom: 0.4em !important;
+                align-items: baseline !important;
+                line-height: 1.6 !important;
+            }
+
+            /* Ensure proper spacing in table of contents */
+            .space-y-1 > * + *,
+            .space-y-2 > * + * {
+                margin-top: 0.4em !important;
+            }
+
+            /* Fix indentation for table of contents items */
+            .ml-6 {
+                margin-left: 1.5cm !important;
+                padding-left: 0 !important;
+            }
+
+            .ml-8 {
+                margin-left: 2.5cm !important;
+                padding-left: 0 !important;
+            }
+
+            /* Special formatting for table of contents */
+            .toc-item {
+                display: flex !important;
+                justify-content: space-between !important;
+                align-items: baseline !important;
+                padding-bottom: 0.3em !important;
+                margin-bottom: 0 !important;
+                line-height: 1.8 !important;
+                width: 100% !important;
+            }
+
+            .toc-text {
+                flex: 1 !important;
+                padding-right: 1em !important;
+                text-align: left !important;
+            }
+
+            .toc-page {
+                flex-shrink: 0 !important;
+                font-weight: normal !important;
+                text-align: right !important;
+                min-width: 2em !important;
+            }
+
+            /* Table formatting for print */
+            table {
+                width: 100% !important;
+                border-collapse: collapse !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            td {
+                padding: 0 !important;
+                margin: 0 !important;
+                vertical-align: baseline !important;
+            }
+
+            tr {
+                margin-bottom: 0.4em !important;
+                display: block !important;
+            }
+
+            tr td {
+                display: flex !important;
+                width: 100% !important;
+            }
+
+            /* Maintain spacing classes */
+            .mb-4 {
+                margin-bottom: 1em !important;
+            }
+
+            .mb-6 {
+                margin-bottom: 1.5em !important;
+            }
+
+            .mt-6 {
+                margin-top: 1.5em !important;
+            }
+
+            .mt-8 {
+                margin-top: 2em !important;
+            }
+
+            .space-y-1 > * + * {
+                margin-top: 0.25em !important;
+            }
+
+            .space-y-2 > * + * {
+                margin-top: 0.5em !important;
+            }
+
+            .space-y-3 > * + * {
+                margin-top: 0.75em !important;
+            }
+
+            /* Text alignment */
+            .text-center {
+                text-align: center !important;
+            }
+
+            .text-right {
+                text-align: right !important;
+            }
+
+            /* Flexbox alignment for print */
+            .flex {
+                display: flex !important;
+            }
+
+            .justify-end {
+                justify-content: flex-end !important;
+            }
+
+            .justify-between {
+                justify-content: space-between !important;
+            }
+
+            .items-baseline {
+                align-items: baseline !important;
+            }
+
+            /* Font styles */
+            .uppercase {
+                text-transform: uppercase !important;
+            }
+
+            .font-bold {
+                font-weight: bold !important;
+            }
+
+            /* Margin left for indentation */
+            .ml-6 {
+                margin-left: 1.5cm !important;
+            }
+
+            .ml-8 {
+                margin-left: 2cm !important;
+            }
+
+            /* Remove container padding */
+            .max-w-4xl {
+                max-width: none !important;
+            }
+
+            .mx-auto {
+                margin-left: 0 !important;
+                margin-right: 0 !important;
+            }
+
+            .p-4, .p-6, .p-8 {
+                padding: 0 !important;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .page-content {
+                font-size: 14px;
+                line-height: 1.6;
+            }
+            
+            h1 {
+                font-size: 1.5rem !important;
+            }
+            
+            h2 {
+                font-size: 1.3rem !important;
+            }
+            
+            h3 {
+                font-size: 1.1rem !important;
+            }
+            
+            .indent {
+                text-indent: 0.5cm;
+            }
+            
+            .hanging-indent {
+                padding-left: 0.5cm;
+                text-indent: -0.5cm;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .page-content {
+                font-size: 12px;
+                line-height: 1.5;
+            }
+            
+            h1 {
+                font-size: 1.2rem !important;
+            }
+            
+            h2 {
+                font-size: 1.1rem !important;
+            }
+            
+            h3 {
+                font-size: 1rem !important;
+            }
+            
+            .indent {
+                text-indent: 0.3cm;
+            }
+            
+            .hanging-indent {
+                padding-left: 0.3cm;
+                text-indent: -0.3cm;
+            }
+            
+            ol, ul {
+                padding-left: 1rem !important;
+            }
+        }
+    </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="bg-white"><!-- Print Button --> <button class="print-button" onclick="printDocument()" title="Cetak Makalah"> 🖨️ Cetak Makalah </button>
+  <div class="max-w-4xl mx-auto p-4 sm:p-6 md:p-8 page-content"><!-- Kata Pengantar -->
+   <div class="page-break page-section page-1">
+    <div class="page-number-roman"></div>
+    <h2 class="text-lg sm:text-xl md:text-2xl text-center mb-4 sm:mb-6 uppercase">Kata Pengantar</h2>
+    <p class="indent mb-4">Puji syukur kami panjatkan ke hadirat Tuhan Yang Maha Esa atas segala rahmat dan karunia-Nya sehingga makalah yang berjudul "Perkembangan dan Dampak Teknologi Terhadap Masyarakat Modern" ini dapat diselesaikan dengan baik. Makalah ini disusun untuk memberikan pemahaman mendalam tentang bagaimana teknologi telah mengubah berbagai aspek kehidupan masyarakat di era modern.</p>
+    <p class="indent mb-4">Perkembangan teknologi yang sangat pesat dalam beberapa dekade terakhir telah membawa perubahan fundamental dalam cara manusia berkomunikasi, bekerja, belajar, dan berinteraksi. Dari revolusi internet hingga kecerdasan buatan, setiap inovasi teknologi membawa dampak yang signifikan terhadap struktur sosial, ekonomi, dan budaya masyarakat. Melalui makalah ini, kami berusaha menganalisis berbagai dimensi dari fenomena tersebut secara komprehensif.</p>
+    <p class="indent mb-4">Kami menyadari bahwa makalah ini masih jauh dari sempurna. Oleh karena itu, kami sangat mengharapkan kritik dan saran yang membangun dari pembaca untuk perbaikan di masa mendatang. Semoga makalah ini dapat memberikan manfaat dan menambah wawasan bagi semua pihak yang membacanya.</p>
+    <div class="mt-8">
+     <div class="flex justify-end">
+      <div class="text-center">
+       <p>Sumedang, 06 November 2025</p><br><br><br>
+       <p>Penulis</p>
+      </div>
+     </div>
+    </div>
+   </div><!-- Daftar Isi -->
+   <div class="page-break page-section page-2">
+    <div class="page-number-roman"></div>
+    <h2 class="text-lg sm:text-xl md:text-2xl text-center mb-4 sm:mb-6 uppercase">Daftar Isi</h2>
+    <div class="space-y-2 text-sm sm:text-base"><!-- Halaman Awal -->
+     <table class="w-full">
+      <tbody>
+       <tr>
+        <td class="text-left">Kata Pengantar</td>
+        <td class="text-center" style="border-bottom: 1px dotted #000; width: 60%;"></td>
+        <td class="text-right w-8">i</td>
+       </tr>
+      </tbody>
+     </table>
+     <table class="w-full">
+      <tbody>
+       <tr>
+        <td class="text-left">Daftar Isi</td>
+        <td class="text-center" style="border-bottom: 1px dotted #000; width: 60%;"></td>
+        <td class="text-right w-8">ii</td>
+       </tr>
+      </tbody>
+     </table><!-- BAB I -->
+     <div class="mt-4">
+      <table class="w-full">
+       <tbody>
+        <tr>
+         <td class="text-left font-bold">BAB I PENDAHULUAN</td>
+         <td class="text-center" style="border-bottom: 1px dotted #000; width: 50%;"></td>
+         <td class="text-right w-8 font-bold">1</td>
+        </tr>
+       </tbody>
+      </table>
+     </div>
+     <table class="w-full">
+      <tbody>
+       <tr>
+        <td class="text-left pl-6">1.1 Latar Belakang Masalah</td>
+        <td class="text-center" style="border-bottom: 1px dotted #000; width: 50%;"></td>
+        <td class="text-right w-8">1</td>
+       </tr>
+      </tbody>
+     </table>
+     <table class="w-full">
+      <tbody>
+       <tr>
+        <td class="text-left pl-6">1.2 Rumusan Masalah</td>
+        <td class="text-center" style="border-bottom: 1px dotted #000; width: 50%;"></td>
+        <td class="text-right w-8">1</td>
+       </tr>
+      </tbody>
+     </table>
+     <table class="w-full">
+      <tbody>
+       <tr>
+        <td class="text-left pl-6">1.3 Tujuan</td>
+        <td class="text-center" style="border-bottom: 1px dotted #000; width: 50%;"></td>
+        <td class="text-right w-8">2</td>
+       </tr>
+      </tbody>
+     </table>
+     <table class="w-full">
+      <tbody>
+       <tr>
+        <td class="text-left pl-6">1.4 Manfaat</td>
+        <td class="text-center" style="border-bottom: 1px dotted #000; width: 50%;"></td>
+        <td class="text-right w-8">2</td>
+       </tr>
+      </tbody>
+     </table><!-- BAB II -->
+     <div class="mt-4">
+      <table class="w-full">
+       <tbody>
+        <tr>
+         <td class="text-left font-bold">BAB II PEMBAHASAN</td>
+         <td class="text-center" style="border-bottom: 1px dotted #000; width: 50%;"></td>
+         <td class="text-right w-8 font-bold">3</td>
+        </tr>
+       </tbody>
+      </table>
+     </div>
+     <table class="w-full">
+      <tbody>
+       <tr>
+        <td class="text-left pl-6">2.1 Perkembangan Teknologi di Era Modern</td>
+        <td class="text-center" style="border-bottom: 1px dotted #000; width: 40%;"></td>
+        <td class="text-right w-8">3</td>
+       </tr>
+      </tbody>
+     </table>
+     <table class="w-full">
+      <tbody>
+       <tr>
+        <td class="text-left pl-12">2.1.1 Sejarah Perkembangan Teknologi Digital</td>
+        <td class="text-center" style="border-bottom: 1px dotted #000; width: 30%;"></td>
+        <td class="text-right w-8">3</td>
+       </tr>
+      </tbody>
+     </table>
+     <table class="w-full">
+      <tbody>
+       <tr>
+        <td class="text-left pl-12">2.1.2 Era Smartphone dan Komputasi Mobile</td>
+        <td class="text-center" style="border-bottom: 1px dotted #000; width: 30%;"></td>
+        <td class="text-right w-8">3</td>
+       </tr>
+      </tbody>
+     </table>
+     <table class="w-full">
+      <tbody>
+       <tr>
+        <td class="text-left pl-12">2.1.3 Kecerdasan Buatan dan Pembelajaran Mesin</td>
+        <td class="text-center" style="border-bottom: 1px dotted #000; width: 30%;"></td>
+        <td class="text-right w-8">4</td>
+       </tr>
+      </tbody>
+     </table>
+     <table class="w-full">
+      <tbody>
+       <tr>
+        <td class="text-left pl-6">2.2 Dampak Positif Teknologi terhadap Masyarakat</td>
+        <td class="text-center" style="border-bottom: 1px dotted #000; width: 35%;"></td>
+        <td class="text-right w-8">4</td>
+       </tr>
+      </tbody>
+     </table>
+     <table class="w-full">
+      <tbody>
+       <tr>
+        <td class="text-left pl-12">2.2.1 Transformasi Pendidikan dan Pembelajaran</td>
+        <td class="text-center" style="border-bottom: 1px dotted #000; width: 30%;"></td>
+        <td class="text-right w-8">4</td>
+       </tr>
+      </tbody>
+     </table>
+     <table class="w-full">
+      <tbody>
+       <tr>
+        <td class="text-left pl-12">2.2.2 Revolusi dalam Layanan Kesehatan</td>
+        <td class="text-center" style="border-bottom: 1px dotted #000; width: 30%;"></td>
+        <td class="text-right w-8">5</td>
+       </tr>
+      </tbody>
+     </table>
+     <table class="w-full">
+      <tbody>
+       <tr>
+        <td class="text-left pl-12">2.2.3 Transformasi Ekonomi dan Dunia Kerja</td>
+        <td class="text-center" style="border-bottom: 1px dotted #000; width: 30%;"></td>
+        <td class="text-right w-8">5</td>
+       </tr>
+      </tbody>
+     </table>
+     <table class="w-full">
+      <tbody>
+       <tr>
+        <td class="text-left pl-6">2.3 Dampak Negatif Teknologi terhadap Masyarakat</td>
+        <td class="text-center" style="border-bottom: 1px dotted #000; width: 35%;"></td>
+        <td class="text-right w-8">6</td>
+       </tr>
+      </tbody>
+     </table>
+     <table class="w-full">
+      <tbody>
+       <tr>
+        <td class="text-left pl-12">2.3.1 Masalah Kesehatan Mental dan Fisik</td>
+        <td class="text-center" style="border-bottom: 1px dotted #000; width: 30%;"></td>
+        <td class="text-right w-8">6</td>
+       </tr>
+      </tbody>
+     </table>
+     <table class="w-full">
+      <tbody>
+       <tr>
+        <td class="text-left pl-12">2.3.2 Kesenjangan Digital dan Ketimpangan Sosial</td>
+        <td class="text-center" style="border-bottom: 1px dotted #000; width: 30%;"></td>
+        <td class="text-right w-8">6</td>
+       </tr>
+      </tbody>
+     </table>
+     <table class="w-full">
+      <tbody>
+       <tr>
+        <td class="text-left pl-12">2.3.3 Ancaman Keamanan dan Privasi</td>
+        <td class="text-center" style="border-bottom: 1px dotted #000; width: 30%;"></td>
+        <td class="text-right w-8">7</td>
+       </tr>
+      </tbody>
+     </table>
+     <table class="w-full">
+      <tbody>
+       <tr>
+        <td class="text-left pl-6">2.4 Teknologi dan Perubahan Sosial Budaya</td>
+        <td class="text-center" style="border-bottom: 1px dotted #000; width: 35%;"></td>
+        <td class="text-right w-8">7</td>
+       </tr>
+      </tbody>
+     </table>
+     <table class="w-full">
+      <tbody>
+       <tr>
+        <td class="text-left pl-12">2.4.1 Transformasi Komunikasi dan Interaksi Sosial</td>
+        <td class="text-center" style="border-bottom: 1px dotted #000; width: 25%;"></td>
+        <td class="text-right w-8">7</td>
+       </tr>
+      </tbody>
+     </table>
+     <table class="w-full">
+      <tbody>
+       <tr>
+        <td class="text-left pl-12">2.4.2 Dampak terhadap Budaya dan Identitas</td>
+        <td class="text-center" style="border-bottom: 1px dotted #000; width: 30%;"></td>
+        <td class="text-right w-8">8</td>
+       </tr>
+      </tbody>
+     </table><!-- BAB III -->
+     <div class="mt-4">
+      <table class="w-full">
+       <tbody>
+        <tr>
+         <td class="text-left font-bold">BAB III PENUTUP</td>
+         <td class="text-center" style="border-bottom: 1px dotted #000; width: 50%;"></td>
+         <td class="text-right w-8 font-bold">9</td>
+        </tr>
+       </tbody>
+      </table>
+     </div>
+     <table class="w-full">
+      <tbody>
+       <tr>
+        <td class="text-left pl-6">3.1 Kesimpulan</td>
+        <td class="text-center" style="border-bottom: 1px dotted #000; width: 50%;"></td>
+        <td class="text-right w-8">9</td>
+       </tr>
+      </tbody>
+     </table>
+     <table class="w-full">
+      <tbody>
+       <tr>
+        <td class="text-left pl-6">3.2 Saran</td>
+        <td class="text-center" style="border-bottom: 1px dotted #000; width: 50%;"></td>
+        <td class="text-right w-8">9</td>
+       </tr>
+      </tbody>
+     </table><!-- Daftar Pustaka -->
+     <div class="mt-4">
+      <table class="w-full">
+       <tbody>
+        <tr>
+         <td class="text-left">Daftar Pustaka</td>
+         <td class="text-center" style="border-bottom: 1px dotted #000; width: 55%;"></td>
+         <td class="text-right w-8">10</td>
+        </tr>
+       </tbody>
+      </table>
+     </div>
+    </div>
+   </div><!-- BAB I -->
+   <div class="page-break page-section page-3">
+    <div class="page-number"></div>
+    <h2 class="text-lg sm:text-xl md:text-2xl text-center mb-4 sm:mb-6 uppercase font-bold">BAB I<br>
+     PENDAHULUAN</h2>
+    <h3 class="text-base sm:text-lg md:text-xl mb-3 sm:mb-4 font-bold">1.1 Latar Belakang Masalah</h3>
+    <p class="indent mb-4">Teknologi telah menjadi bagian integral dari kehidupan manusia modern. Sejak revolusi industri hingga era digital saat ini, perkembangan teknologi telah mengalami akselerasi yang luar biasa. Transformasi digital yang terjadi dalam dua dekade terakhir telah mengubah hampir setiap aspek kehidupan masyarakat, mulai dari cara berkomunikasi, bekerja, belajar, hingga bersosialisasi.</p>
+    <p class="indent mb-4">Kemunculan internet, smartphone, media sosial, dan berbagai inovasi teknologi lainnya telah menciptakan paradigma baru dalam interaksi sosial dan ekonomi. Masyarakat modern kini hidup dalam era yang disebut sebagai Revolusi Industri 4.0, di mana teknologi digital, kecerdasan buatan, dan otomasi menjadi kekuatan pendorong utama perubahan sosial.</p>
+    <p class="indent mb-4">Namun, di balik kemudahan dan manfaat yang ditawarkan, teknologi juga membawa berbagai tantangan dan dampak yang perlu dikaji secara mendalam. Ketergantungan terhadap teknologi, kesenjangan digital, isu privasi, dan perubahan pola interaksi sosial menjadi beberapa permasalahan yang muncul seiring dengan pesatnya perkembangan teknologi.</p>
+    <h3 class="text-base sm:text-lg md:text-xl mb-3 sm:mb-4 mt-4 sm:mt-6 font-bold">1.2 Rumusan Masalah</h3>
+    <p class="mb-2">Berdasarkan latar belakang di atas, rumusan masalah dalam makalah ini adalah:</p>
+    <ol class="list-decimal ml-4 sm:ml-6 md:ml-8 mb-4 space-y-1 text-sm sm:text-base">
+     <li>Bagaimana perkembangan teknologi di era modern?</li>
+     <li>Apa saja dampak positif teknologi terhadap masyarakat modern?</li>
+     <li>Apa saja dampak negatif teknologi terhadap masyarakat modern?</li>
+     <li>Bagaimana masyarakat dapat memanfaatkan teknologi secara bijak?</li>
+    </ol>
+    <h3 class="text-base sm:text-lg md:text-xl mb-3 sm:mb-4 mt-4 sm:mt-6 font-bold">1.3 Tujuan</h3>
+    <p class="mb-2 text-sm sm:text-base">Tujuan penulisan makalah ini adalah:</p>
+    <ol class="list-decimal ml-4 sm:ml-6 md:ml-8 mb-4 space-y-1 text-sm sm:text-base">
+     <li>Menjelaskan perkembangan teknologi di era modern</li>
+     <li>Mengidentifikasi dampak positif teknologi terhadap masyarakat</li>
+     <li>Menganalisis dampak negatif teknologi terhadap masyarakat</li>
+     <li>Memberikan rekomendasi pemanfaatan teknologi secara bijak</li>
+    </ol>
+    <h3 class="text-base sm:text-lg md:text-xl mb-3 sm:mb-4 mt-4 sm:mt-6 font-bold">1.4 Manfaat</h3>
+    <p class="mb-2 text-sm sm:text-base">Manfaat dari penulisan makalah ini adalah:</p>
+    <ol class="list-decimal ml-4 sm:ml-6 md:ml-8 mb-4 space-y-1 text-sm sm:text-base">
+     <li>Memberikan pemahaman komprehensif tentang perkembangan teknologi</li>
+     <li>Meningkatkan kesadaran masyarakat tentang dampak teknologi</li>
+     <li>Menjadi referensi dalam pengambilan keputusan terkait penggunaan teknologi</li>
+     <li>Mendorong pemanfaatan teknologi yang bertanggung jawab dan berkelanjutan</li>
+    </ol>
+   </div><!-- BAB II -->
+   <div class="page-break page-section page-4">
+    <div class="page-number"></div>
+    <h2 class="text-lg sm:text-xl md:text-2xl text-center mb-4 sm:mb-6 uppercase font-bold">BAB II<br>
+     PEMBAHASAN</h2>
+    <h3 class="text-base sm:text-lg md:text-xl mb-3 sm:mb-4 font-bold">2.1 Perkembangan Teknologi di Era Modern</h3>
+    <h4 class="text-sm sm:text-base md:text-lg mb-2 sm:mb-3 font-bold">2.1.1 Sejarah Perkembangan Teknologi Digital</h4>
+    <p class="indent mb-4">Era modern teknologi dimulai dari revolusi komputer pada pertengahan abad ke-20. Komputer pertama seperti ENIAC (1946) yang berukuran sebesar ruangan, berkembang menjadi komputer personal pada tahun 1970-an dan 1980-an. Kemunculan World Wide Web oleh Tim Berners-Lee pada tahun 1989 menjadi tonggak sejarah yang mengubah cara manusia mengakses dan berbagi informasi.</p>
+    <p class="indent mb-4">Revolusi internet pada tahun 1990-an membuka era baru komunikasi global. Dari awalnya hanya digunakan untuk keperluan akademis dan militer melalui ARPANET, internet berkembang menjadi infrastruktur global yang menghubungkan miliaran orang di seluruh dunia. Kemunculan browser web seperti Mosaic dan Netscape memudahkan akses internet bagi masyarakat umum.</p>
+    <p class="indent mb-4">Memasuki abad ke-21, perkembangan teknologi mengalami akselerasi eksponensial. Lahirnya Web 2.0 memungkinkan interaksi dua arah dan partisipasi aktif pengguna dalam menciptakan konten. Platform media sosial seperti Facebook, Twitter, dan YouTube mengubah paradigma komunikasi dan berbagi informasi secara fundamental.</p>
+    <h4 class="text-sm sm:text-base md:text-lg mb-2 sm:mb-3 font-bold">2.1.2 Era Smartphone dan Komputasi Mobile</h4>
+    <p class="indent mb-4">Peluncuran iPhone pada tahun 2007 menandai dimulainya era smartphone yang revolusioner. Perangkat mobile yang menggabungkan fungsi komunikasi, komputasi, fotografi, navigasi, dan akses internet dalam satu genggaman telah mengubah cara manusia berinteraksi dengan teknologi dan informasi. Smartphone tidak hanya menjadi alat komunikasi, tetapi juga pusat kehidupan digital seseorang.</p>
+    <p class="indent mb-4">Ekosistem aplikasi mobile menciptakan ekonomi digital baru dengan jutaan aplikasi yang tersedia di berbagai platform. Dari aplikasi produktivitas, hiburan, pendidikan, hingga layanan finansial, smartphone telah menjadi gateway utama untuk mengakses berbagai layanan digital. Teknologi GPS dan sensor yang terintegrasi memungkinkan pengembangan aplikasi berbasis lokasi dan augmented reality.</p>
+    <p class="indent mb-4">Perkembangan jaringan seluler dari 2G hingga 5G saat ini telah meningkatkan kecepatan dan kapasitas transfer data secara dramatis. Jaringan 5G dengan latensi ultra-rendah membuka peluang untuk aplikasi real-time seperti autonomous vehicle, remote surgery, dan Internet of Things (IoT) skala masif.</p>
+    <h4 class="text-sm sm:text-base md:text-lg mb-2 sm:mb-3 font-bold">2.1.3 Kecerdasan Buatan dan Pembelajaran Mesin</h4>
+    <p class="indent mb-4">Kecerdasan buatan (AI) telah berkembang dari konsep teoretis menjadi teknologi yang terintegrasi dalam kehidupan sehari-hari. Pembelajaran mesin (machine learning) dan deep learning memungkinkan komputer untuk belajar dari data tanpa pemrograman eksplisit. Teknologi ini telah diterapkan dalam berbagai bidang, mulai dari pengenalan suara dan gambar hingga sistem rekomendasi dan analisis prediktif.</p>
+    <p class="indent mb-4">Asisten virtual seperti Siri, Google Assistant, dan Alexa telah mengubah cara manusia berinteraksi dengan teknologi melalui antarmuka suara yang natural. Natural Language Processing (NLP) memungkinkan komputer memahami dan merespons bahasa manusia dengan tingkat akurasi yang semakin tinggi. Chatbot dan virtual assistant kini digunakan dalam layanan pelanggan, pendidikan, dan berbagai aplikasi bisnis.</p>
+    <p class="indent mb-4">Perkembangan terbaru dalam AI generatif, seperti GPT dan DALL-E, telah membuka kemungkinan baru dalam penciptaan konten otomatis. Teknologi ini dapat menghasilkan teks, gambar, musik, dan bahkan kode program dengan kualitas yang mendekati hasil karya manusia, menimbulkan diskusi tentang masa depan kreativitas dan pekerjaan manusia.</p>
+    <h3 class="text-base sm:text-lg md:text-xl mb-3 sm:mb-4 mt-4 sm:mt-6 font-bold">2.2 Dampak Positif Teknologi terhadap Masyarakat</h3>
+    <h4 class="text-sm sm:text-base md:text-lg mb-2 sm:mb-3 font-bold">2.2.1 Transformasi Pendidikan dan Pembelajaran</h4>
+    <p class="indent mb-4"><strong>Demokratisasi Akses Pendidikan:</strong> Teknologi internet telah menghilangkan batasan geografis dan ekonomi dalam mengakses pendidikan berkualitas. Platform pembelajaran online seperti Coursera, edX, dan Khan Academy menyediakan kursus dari universitas terkemuka dunia secara gratis atau dengan biaya terjangkau. Massive Open Online Courses (MOOCs) memungkinkan jutaan orang di seluruh dunia mengakses pendidikan tinggi tanpa harus meninggalkan rumah.</p>
+    <p class="indent mb-4"><strong>Personalisasi Pembelajaran:</strong> Teknologi AI memungkinkan sistem pembelajaran adaptif yang dapat menyesuaikan materi dan kecepatan pembelajaran dengan kebutuhan individual siswa. Algoritma pembelajaran mesin dapat menganalisis pola belajar siswa dan memberikan rekomendasi materi yang paling sesuai, meningkatkan efektivitas pembelajaran secara signifikan.</p>
+    <p class="indent mb-4"><strong>Pembelajaran Interaktif dan Immersive:</strong> Virtual Reality (VR) dan Augmented Reality (AR) telah membawa dimensi baru dalam pendidikan. Siswa dapat "mengunjungi" situs bersejarah, menjelajahi struktur molekul dalam 3D, atau melakukan eksperimen virtual yang berbahaya atau mahal untuk dilakukan di dunia nyata. Gamifikasi pembelajaran membuat proses belajar menjadi lebih menarik dan engaging.</p>
+    <h4 class="text-sm sm:text-base md:text-lg mb-2 sm:mb-3 font-bold">2.2.2 Revolusi dalam Layanan Kesehatan</h4>
+    <p class="indent mb-4"><strong>Telemedicine dan Akses Kesehatan:</strong> Teknologi telah memungkinkan konsultasi medis jarak jauh, sangat bermanfaat bagi masyarakat di daerah terpencil atau dengan mobilitas terbatas. Aplikasi kesehatan memungkinkan monitoring vital signs, konsultasi dengan dokter spesialis, dan akses ke rekam medis elektronik. Pandemi COVID-19 telah mempercepat adopsi telemedicine secara global.</p>
+    <p class="indent mb-4"><strong>Diagnostik dan Pengobatan Presisi:</strong> AI dalam bidang medis telah menunjukkan kemampuan luar biasa dalam mendiagnosis penyakit dengan akurasi tinggi. Sistem AI dapat menganalisis hasil radiologi, patologi, dan data genomik untuk memberikan diagnosis yang lebih cepat dan akurat. Pengobatan presisi berdasarkan profil genetik individual menjadi kenyataan berkat kemajuan teknologi bioinformatika.</p>
+    <p class="indent mb-4"><strong>Wearable Technology dan Preventive Healthcare:</strong> Perangkat wearable seperti smartwatch dan fitness tracker memungkinkan monitoring kesehatan real-time. Data seperti detak jantung, pola tidur, aktivitas fisik, dan bahkan kadar gula darah dapat dipantau secara kontinyu, memungkinkan deteksi dini masalah kesehatan dan mendorong gaya hidup yang lebih sehat.</p>
+    <h4 class="text-sm sm:text-base md:text-lg mb-2 sm:mb-3 font-bold">2.2.3 Transformasi Ekonomi dan Dunia Kerja</h4>
+    <p class="indent mb-4"><strong>Ekonomi Digital dan E-commerce:</strong> Internet telah menciptakan ekonomi digital yang bernilai triliunan dollar. Platform e-commerce memungkinkan bisnis kecil dan menengah untuk menjangkau pasar global tanpa investasi infrastruktur yang besar. Marketplace online telah mendemokratisasi perdagangan dan menciptakan peluang ekonomi baru bagi jutaan orang.</p>
+    <p class="indent mb-4"><strong>Remote Work dan Fleksibilitas:</strong> Teknologi cloud computing dan kolaborasi online telah memungkinkan kerja jarak jauh menjadi mainstream. Tools seperti Zoom, Slack, dan Google Workspace memungkinkan tim untuk berkolaborasi secara efektif tanpa batasan geografis. Hal ini membuka peluang kerja bagi talenta di daerah terpencil dan meningkatkan work-life balance.</p>
+    <p class="indent mb-4"><strong>Gig Economy dan Entrepreneurship:</strong> Platform digital telah melahirkan gig economy yang memberikan fleksibilitas kerja dan sumber penghasilan tambahan. Aplikasi seperti Uber, Gojek, Freelancer, dan Upwork telah menciptakan ekosistem kerja baru yang memungkinkan individu untuk menjadi entrepreneur dengan modal minimal.</p>
+    <h3 class="text-base sm:text-lg md:text-xl mb-3 sm:mb-4 mt-4 sm:mt-6 font-bold">2.3 Dampak Negatif Teknologi terhadap Masyarakat</h3>
+    <h4 class="text-sm sm:text-base md:text-lg mb-2 sm:mb-3 font-bold">2.3.1 Masalah Kesehatan Mental dan Fisik</h4>
+    <p class="indent mb-4"><strong>Adiksi Digital dan Gangguan Mental:</strong> Penggunaan teknologi yang berlebihan, terutama media sosial dan game online, dapat menyebabkan adiksi digital. Fenomena Fear of Missing Out (FOMO), nomophobia (ketakutan tidak memiliki smartphone), dan social media anxiety menjadi masalah kesehatan mental yang semakin umum. Dopamine-driven feedback loops dalam aplikasi dirancang untuk membuat pengguna terus kembali, menciptakan pola perilaku adiktif.</p>
+    <p class="indent mb-4"><strong>Dampak pada Kesehatan Fisik:</strong> Penggunaan gadget yang berlebihan menyebabkan berbagai masalah kesehatan fisik. Computer Vision Syndrome (CVS) akibat paparan layar berlebihan, text neck syndrome akibat postur yang buruk saat menggunakan smartphone, dan gangguan tidur akibat paparan blue light menjadi masalah kesehatan yang semakin prevalen. Gaya hidup sedentary yang dipicu oleh teknologi juga berkontribusi pada obesitas dan masalah kardiovaskular.</p>
+    <p class="indent mb-4"><strong>Gangguan Perkembangan pada Anak:</strong> Paparan teknologi berlebihan pada anak-anak dapat mengganggu perkembangan kognitif, sosial, dan emosional. Screen time yang berlebihan dikaitkan dengan keterlambatan perkembangan bahasa, masalah perhatian, dan kesulitan dalam interaksi sosial. Konten yang tidak sesuai usia dapat mempengaruhi perkembangan psikologis anak secara negatif.</p>
+    <h4 class="text-sm sm:text-base md:text-lg mb-2 sm:mb-3 font-bold">2.3.2 Kesenjangan Digital dan Ketimpangan Sosial</h4>
+    <p class="indent mb-4"><strong>Digital Divide:</strong> Tidak semua lapisan masyarakat memiliki akses yang sama terhadap teknologi digital. Kesenjangan antara daerah urban dan rural, kelompok ekonomi berbeda, dan generasi yang berbeda menciptakan digital divide yang dapat memperlebar ketimpangan sosial dan ekonomi. Mereka yang tidak memiliki akses teknologi berisiko tertinggal dalam berbagai aspek kehidupan.</p>
+    <p class="indent mb-4"><strong>Bias Algoritma dan Diskriminasi:</strong> Sistem AI dan algoritma dapat mengandung bias yang mencerminkan prasangka manusia yang membuatnya. Hal ini dapat menyebabkan diskriminasi dalam berbagai bidang seperti rekrutmen kerja, pemberian kredit, dan sistem peradilan. Bias algoritma dapat memperkuat dan mengamplifikasi ketidakadilan yang sudah ada dalam masyarakat.</p>
+    <p class="indent mb-4"><strong>Polarisasi dan Echo Chamber:</strong> Algoritma media sosial yang dirancang untuk meningkatkan engagement dapat menciptakan echo chamber dan filter bubble. Pengguna cenderung terpapar informasi yang sesuai dengan pandangan mereka, memperkuat bias konfirmasi dan menciptakan polarisasi sosial. Hal ini dapat memperburuk perpecahan dalam masyarakat dan mengurangi toleransi terhadap pandangan yang berbeda.</p>
+    <h4 class="text-sm sm:text-base md:text-lg mb-2 sm:mb-3 font-bold">2.3.3 Ancaman Keamanan dan Privasi</h4>
+    <p class="indent mb-4"><strong>Pelanggaran Data dan Privasi:</strong> Pengumpulan data pribadi secara masif oleh perusahaan teknologi menimbulkan kekhawatiran serius tentang privasi. Kasus pelanggaran data seperti Cambridge Analytica menunjukkan bagaimana data pribadi dapat disalahgunakan untuk manipulasi politik. Surveillance capitalism menciptakan model bisnis yang bergantung pada eksploitasi data pribadi tanpa kompensasi yang adil kepada pengguna.</p>
+    <p class="indent mb-4"><strong>Cybercrime dan Keamanan Siber:</strong> Meningkatnya ketergantungan pada teknologi digital juga meningkatkan risiko cybercrime. Serangan ransomware, phishing, identity theft, dan fraud online menjadi ancaman yang semakin sophisticated. Infrastruktur kritis seperti sistem kelistrikan, transportasi, dan kesehatan menjadi target potensial serangan siber yang dapat berdampak luas.</p>
+    <p class="indent mb-4"><strong>Misinformasi dan Disinformasi:</strong> Kemudahan berbagi informasi di era digital juga memudahkan penyebaran informasi yang salah atau menyesatkan. Fake news, conspiracy theories, dan propaganda dapat menyebar dengan cepat melalui media sosial, mempengaruhi opini publik dan bahkan hasil pemilihan umum. Deepfake technology menambah kompleksitas dalam membedakan informasi yang benar dan palsu.</p>
+    <h3 class="text-base sm:text-lg md:text-xl mb-3 sm:mb-4 mt-4 sm:mt-6 font-bold">2.4 Teknologi dan Perubahan Sosial Budaya</h3>
+    <h4 class="text-sm sm:text-base md:text-lg mb-2 sm:mb-3 font-bold">2.4.1 Transformasi Komunikasi dan Interaksi Sosial</h4>
+    <p class="indent mb-4">Teknologi digital telah mengubah fundamental cara manusia berkomunikasi dan berinteraksi. Media sosial telah menciptakan bentuk baru sosialisasi yang melampaui batasan geografis dan temporal. Namun, pergeseran dari komunikasi tatap muka ke komunikasi digital juga membawa konsekuensi pada kualitas hubungan interpersonal dan kemampuan empati.</p>
+    <p class="indent mb-4">Fenomena "always connected" menciptakan ekspektasi untuk selalu tersedia dan responsif, yang dapat menyebabkan stress dan burnout. Paradoks konektivitas digital adalah bahwa meskipun kita lebih terhubung secara teknologi, banyak orang merasa lebih kesepian dan terisolasi secara emosional.</p>
+    <h4 class="text-sm sm:text-base md:text-lg mb-2 sm:mb-3 font-bold">2.4.2 Dampak terhadap Budaya dan Identitas</h4>
+    <p class="indent mb-4">Globalisasi digital telah memfasilitasi pertukaran budaya yang belum pernah terjadi sebelumnya. Platform seperti YouTube, TikTok, dan Netflix telah menjadi medium untuk berbagi dan mengonsumsi konten budaya dari seluruh dunia. Hal ini dapat memperkaya perspektif dan pemahaman lintas budaya, namun juga menimbulkan kekhawatiran tentang homogenisasi budaya dan hilangnya keunikan lokal.</p>
+    <p class="indent mb-4">Digital identity menjadi aspek penting dalam kehidupan modern. Cara individu mempresentasikan diri di media sosial dapat berbeda dengan identitas offline mereka, menciptakan kompleksitas baru dalam pembentukan identitas, terutama pada generasi muda yang tumbuh di era digital.</p>
+   </div><!-- BAB III -->
+   <div class="page-break page-section page-5">
+    <div class="page-number"></div>
+    <h2 class="text-2xl text-center mb-6 uppercase font-bold">BAB III<br>
+     PENUTUP</h2>
+    <h3 class="text-xl mb-4 font-bold">3.1 Kesimpulan</h3>
+    <p class="indent mb-4">Perkembangan teknologi di era modern telah membawa transformasi fundamental dalam berbagai aspek kehidupan masyarakat. Dari revolusi internet hingga kecerdasan buatan, setiap inovasi teknologi telah mengubah cara manusia bekerja, berkomunikasi, belajar, dan berinteraksi. Teknologi telah menjadi katalisator perubahan sosial, ekonomi, dan budaya yang tidak dapat dihindari.</p>
+    <p class="indent mb-4">Dampak positif teknologi sangat signifikan, meliputi kemudahan akses informasi, efisiensi komunikasi, peningkatan produktivitas, dan inovasi dalam berbagai sektor termasuk kesehatan dan pendidikan. Teknologi telah membuka peluang baru dan meningkatkan kualitas hidup masyarakat dalam banyak hal.</p>
+    <p class="indent mb-4">Namun, di sisi lain, teknologi juga membawa dampak negatif yang perlu diwaspadai. Ketergantungan teknologi, kesenjangan digital, isu privasi dan keamanan data, perubahan pola interaksi sosial, serta dampak terhadap kesehatan menjadi tantangan yang harus dihadapi masyarakat modern.</p>
+    <p class="indent mb-4">Kunci utama adalah memanfaatkan teknologi secara bijak dan bertanggung jawab. Masyarakat perlu memiliki literasi digital yang baik untuk dapat memaksimalkan manfaat teknologi sambil meminimalkan dampak negatifnya. Keseimbangan antara kehidupan digital dan kehidupan nyata menjadi sangat penting untuk menjaga kesejahteraan holistik.</p>
+    <h3 class="text-xl mb-4 mt-6 font-bold">3.2 Saran</h3>
+    <p class="mb-2">Berdasarkan pembahasan dan kesimpulan di atas, beberapa saran yang dapat diberikan adalah:</p>
+    <ol class="list-decimal ml-8 mb-4 space-y-2">
+     <li><strong>Untuk Individu:</strong> Gunakan teknologi secara bijak dengan membatasi waktu penggunaan gadget, menjaga privasi data pribadi, dan tetap memprioritaskan interaksi sosial langsung. Kembangkan literasi digital untuk dapat memanfaatkan teknologi secara optimal.</li>
+     <li><strong>Untuk Keluarga:</strong> Orang tua perlu mengawasi dan membimbing anak-anak dalam menggunakan teknologi. Tetapkan aturan penggunaan gadget di rumah dan dorong aktivitas offline yang sehat.</li>
+     <li><strong>Untuk Institusi Pendidikan:</strong> Integrasikan pendidikan literasi digital dalam kurikulum. Ajarkan siswa tidak hanya cara menggunakan teknologi, tetapi juga etika digital dan kemampuan berpikir kritis terhadap informasi online.</li>
+     <li><strong>Untuk Pemerintah:</strong> Kembangkan kebijakan yang mendukung pemerataan akses teknologi untuk mengurangi kesenjangan digital. Perkuat regulasi perlindungan data pribadi dan keamanan siber.</li>
+     <li><strong>Untuk Perusahaan Teknologi:</strong> Kembangkan produk dan layanan yang mempertimbangkan aspek kesejahteraan pengguna. Transparan dalam penggunaan data dan berikan kontrol lebih kepada pengguna atas data pribadi mereka.</li>
+    </ol>
+   </div><!-- Daftar Pustaka -->
+   <div class="page-section page-6">
+    <div class="page-number"></div>
+    <h2 class="text-2xl text-center mb-6 uppercase font-bold">Daftar Pustaka</h2>
+    <div class="space-y-3">
+     <p class="hanging-indent">Castells, M. (2010). <em>The Rise of the Network Society: The Information Age: Economy, Society, and Culture Volume I</em>. Wiley-Blackwell.</p>
+     <p class="hanging-indent">Floridi, L. (2014). <em>The Fourth Revolution: How the Infosphere is Reshaping Human Reality</em>. Oxford University Press.</p>
+     <p class="hanging-indent">Schwab, K. (2017). <em>The Fourth Industrial Revolution</em>. Crown Business.</p>
+     <p class="hanging-indent">Turkle, S. (2011). <em>Alone Together: Why We Expect More from Technology and Less from Each Other</em>. Basic Books.</p>
+     <p class="hanging-indent">Van Dijk, J. (2020). <em>The Digital Divide</em>. Polity Press.</p>
+     <p class="hanging-indent">Zuboff, S. (2019). <em>The Age of Surveillance Capitalism: The Fight for a Human Future at the New Frontier of Power</em>. PublicAffairs.</p>
+     <p class="hanging-indent">World Economic Forum. (2020). <em>The Future of Jobs Report 2020</em>. Geneva: World Economic Forum.</p>
+     <p class="hanging-indent">International Telecommunication Union. (2021). <em>Measuring Digital Development: Facts and Figures 2021</em>. Geneva: ITU.</p>
+    </div>
+   </div>
+  </div>
+  <script>
+        const defaultConfig = {
+            judul_makalah: "Perkembangan dan Dampak Teknologi Terhadap Masyarakat Modern",
+            nama_penulis: "Nama Penulis",
+            institusi: "Nama Institusi",
+            background_color: "#ffffff",
+            text_color: "#1a1a1a",
+            accent_color: "#2563eb"
+        };
+
+        let config = { ...defaultConfig };
+
+        async function onConfigChange(newConfig) {
+            config = { ...config, ...newConfig };
+            
+            document.body.style.backgroundColor = config.background_color || defaultConfig.background_color;
+            document.body.style.color = config.text_color || defaultConfig.text_color;
+        }
+
+        function mapToCapabilities(config) {
+            return {
+                recolorables: [
+                    {
+                        get: () => config.background_color || defaultConfig.background_color,
+                        set: (value) => {
+                            config.background_color = value;
+                            if (window.elementSdk) {
+                                window.elementSdk.setConfig({ background_color: value });
+                            }
+                        }
+                    },
+                    {
+                        get: () => config.text_color || defaultConfig.text_color,
+                        set: (value) => {
+                            config.text_color = value;
+                            if (window.elementSdk) {
+                                window.elementSdk.setConfig({ text_color: value });
+                            }
+                        }
+                    },
+                    {
+                        get: () => config.accent_color || defaultConfig.accent_color,
+                        set: (value) => {
+                            config.accent_color = value;
+                            if (window.elementSdk) {
+                                window.elementSdk.setConfig({ accent_color: value });
+                            }
+                        }
+                    }
+                ],
+                borderables: [],
+                fontEditable: undefined,
+                fontSizeable: undefined
+            };
+        }
+
+        function mapToEditPanelValues(config) {
+            return new Map([
+                ["judul_makalah", config.judul_makalah || defaultConfig.judul_makalah],
+                ["nama_penulis", config.nama_penulis || defaultConfig.nama_penulis],
+                ["institusi", config.institusi || defaultConfig.institusi]
+            ]);
+        }
+
+        // Print function
+        function printDocument() {
+            // Show loading state
+            const printBtn = document.querySelector('.print-button');
+            const originalText = printBtn.innerHTML;
+            printBtn.innerHTML = '⏳ Menyiapkan...';
+            printBtn.disabled = true;
+            
+            // Small delay to ensure styles are applied
+            setTimeout(() => {
+                window.print();
+                
+                // Reset button after print dialog
+                setTimeout(() => {
+                    printBtn.innerHTML = originalText;
+                    printBtn.disabled = false;
+                }, 1000);
+            }, 500);
+        }
+
+        // Keyboard shortcut for printing (Ctrl+P)
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'p') {
+                e.preventDefault();
+                printDocument();
+            }
+        });
+
+        if (window.elementSdk) {
+            window.elementSdk.init({
+                defaultConfig,
+                onConfigChange,
+                mapToCapabilities,
+                mapToEditPanelValues
+            });
+        }
+    </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99a1bfe4e32e9cf9',t:'MTc2MjQwMjMxNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
